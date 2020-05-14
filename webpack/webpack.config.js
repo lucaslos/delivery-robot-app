@@ -32,6 +32,10 @@ module.exports = merge(commonConfig, /** @type { import('webpack').Configuration
   },
 
   optimization: {
+    runtimeChunk: true,
+    splitChunks: {
+      chunks: 'all',
+    },
     minimizer: [
       new TerserPlugin({
         terserOptions: {

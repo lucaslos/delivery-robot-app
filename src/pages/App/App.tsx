@@ -52,7 +52,7 @@ const TopBar = styled.div`
 const Title = styled.div`
   font-size: 14px;
   font-weight: 300;
-  margin-left: 20px;
+  margin-left: 24px;
   ${letterSpacing(4)};
 `;
 
