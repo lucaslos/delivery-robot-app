@@ -33,7 +33,8 @@ module.exports = merge(
       contentBase: path.join(__dirname, 'public'),
       port: 8000,
       hot: true,
-      // quiet: true,
+      host: '0.0.0.0',
+      disableHostCheck: true,
       historyApiFallback: true,
       headers: {
         'Access-Control-Allow-Origin': '*',

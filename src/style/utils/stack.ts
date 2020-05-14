@@ -19,14 +19,14 @@ const alignValues = {
 export type StackProps = {
   justify?: keyof typeof justifyValues;
   align?: keyof typeof alignValues;
-  spacing?: string | number;
+  gap?: string | number;
   preventShrink?: boolean;
 };
 
 export const stack = ({
   justify = 'top',
   align = 'center',
-  spacing,
+  gap,
   preventShrink = true,
 }: StackProps = {}) =>
   css({
@@ -35,7 +35,7 @@ export const stack = ({
     justifyContent: justifyValues[justify],
     alignItems: alignValues[align],
     '> *:not(:last-child)': {
-      marginBottom: spacing,
+      marginBottom: gap,
     },
     '> *': {
       flexShrink: preventShrink ? 0 : undefined,

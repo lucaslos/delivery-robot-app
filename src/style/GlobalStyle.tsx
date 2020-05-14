@@ -24,10 +24,11 @@ const GlobalStyle = () => (
 
         * {
           user-select: none;
+          -webkit-tap-highlight-color: transparent;
         }
 
         button {
-          color: #000;
+          color: currentColor;
         }
 
         p,

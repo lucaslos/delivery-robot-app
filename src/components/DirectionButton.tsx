@@ -11,6 +11,13 @@ const Container = styled.button`
   background: #002254;
   ${centerContent};
   padding-right: 6px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  transition: 160ms;
+
+  &:active {
+    box-shadow: 0px 0px 16px rgba(86, 204, 242, 0.7);
+  }
 `;
 
 const rotations = {
@@ -22,20 +29,28 @@ const rotations = {
 
 type DirectionButtonProps = {
   direction: 'up' | 'left' | 'right' | 'down';
-  onClick: anyFunction;
+  onPressStart: anyFunction;
+  onPressEnd: anyFunction;
   className?: string;
 };
 
 export const DirectionButton = ({
   direction,
-  onClick,
+  onPressStart,
+  onPressEnd,
   className,
 }: DirectionButtonProps) => (
   <Container
     className={className}
     style={{ transform: `rotate(${rotations[direction]}deg)` }}
-    onClick={onClick}
+    onPointerDown={onPressStart}
+    onPointerUp={onPressEnd}
+    onContextMenu={e => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }}
   >
-    <Icon name="chevron-left" color="#fff" size={50} />
+    <Icon name="chevron-left" color={theme.colors.secondary} size={50} />
   </Container>
 );

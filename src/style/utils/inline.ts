@@ -19,20 +19,20 @@ const alignValues = {
 export type InlineProps = {
   justify?: keyof typeof justifyValues;
   align?: keyof typeof alignValues;
-  spacing?: string | number;
+  gap?: string | number;
 };
 
 export const inline = ({
   justify = 'left',
   align = 'center',
-  spacing,
+  gap,
 }: InlineProps = {}) =>
   css({
     display: 'flex',
     justifyContent: justifyValues[justify],
     alignItems: alignValues[align],
     '> *:not(:last-child)': {
-      marginRight: spacing,
+      marginRight: gap,
     },
     '> *': {
       flexShrink: 0,
