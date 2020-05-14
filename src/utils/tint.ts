@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { tint as polishedTint } from 'polished';
 
 /**

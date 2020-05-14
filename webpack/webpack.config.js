@@ -17,7 +17,7 @@ module.exports = merge(commonConfig, /** @type { import('webpack').Configuration
     pathinfo: true,
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
-    path: path.resolve(__dirname, '../dist'),
+    path: path.resolve(__dirname, '../docs'),
     publicPath: '',
   },
 
@@ -63,7 +63,7 @@ module.exports = merge(commonConfig, /** @type { import('webpack').Configuration
 
   plugins: [
     new CleanWebpackPlugin(),
-    // new SizePlugin(),
+    new SizePlugin(),
     new webpack.DefinePlugin({
       __DEV__: false,
       __PROD__: true,

@@ -17,8 +17,7 @@ const googleFonts = appConfig.html.fonts
       .join('|')
   : false;
 
-const GlobalStyleWrapper: FunctionComponent = ({ children }) => {
-  return (
+const GlobalStyleWrapper: FunctionComponent = ({ children }) => (
     <>
       <Helmet>
         {googleFonts && (
@@ -33,6 +32,5 @@ const GlobalStyleWrapper: FunctionComponent = ({ children }) => {
       {children}
     </>
   );
-};
 
 export default GlobalStyleWrapper;

@@ -22,12 +22,10 @@ type Props = {
   onClick: anyFunction;
 };
 
-const Button = ({ label, onClick }: Props) => {
-  return (
+const Button = ({ label, onClick }: Props) => (
     <Container onClick={onClick} onMouseDown={e => e.preventDefault()}>
       <Label>{label}</Label>
     </Container>
   );
-};
 
 export default Button;
