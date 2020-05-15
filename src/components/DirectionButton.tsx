@@ -43,8 +43,10 @@ export const DirectionButton = ({
   <Container
     className={className}
     style={{ transform: `rotate(${rotations[direction]}deg)` }}
-    onPointerDown={onPressStart}
-    onPointerUp={onPressEnd}
+    onMouseDown={onPressStart}
+    onMouseUp={onPressEnd}
+    onTouchStart={onPressStart}
+    onTouchEnd={onPressEnd}
     onContextMenu={e => {
       e.preventDefault();
       e.stopPropagation();
