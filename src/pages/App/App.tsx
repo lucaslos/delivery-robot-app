@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import { fillContainer } from '@src/style/utils/fillContainer';
 import { theme } from '@src/style/theme';
@@ -10,6 +10,8 @@ import { stack } from '@src/style/utils/stack';
 import { letterSpacing } from '@src/style/utils/letterSpacing';
 import Car from '@src/components/Car';
 import { centerContent } from '@src/style/utils/centerContent';
+import { useShortCut, useOnKeyPress } from '@src/utils/hooks/useShortCut';
+import hotkeys, { KeyHandler } from 'hotkeys-js';
 
 const Container = styled.div`
   ${fillContainer};
@@ -86,6 +88,26 @@ const App = () => {
   const [isTurningRight, setIsTurningRight] = useState(false);
   const [isAccelerating, setIsAccelerating] = useState(false);
   const [isReversing, setIsReversing] = useState(false);
+
+  useOnKeyPress('w', {
+    onPressStart: () => setIsAccelerating(true),
+    onPressEnd: () => setIsAccelerating(false),
+  });
+
+  useOnKeyPress('s', {
+    onPressStart: () => setIsReversing(true),
+    onPressEnd: () => setIsReversing(false),
+  });
+
+  useOnKeyPress('a', {
+    onPressStart: () => setIsTurningLeft(true),
+    onPressEnd: () => setIsTurningLeft(false),
+  });
+
+  useOnKeyPress('d', {
+    onPressStart: () => setIsTurningRight(true),
+    onPressEnd: () => setIsTurningRight(false),
+  });
 
   return (
     <Container>
