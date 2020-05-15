@@ -15,8 +15,8 @@ module.exports = merge(commonConfig, /** @type { import('webpack').Configuration
 
   output: {
     pathinfo: true,
-    filename: '[name].js',
-    chunkFilename: '[name].chunk.js',
+    filename: '[name].[contenthash:8].js',
+    chunkFilename: '[name].[contenthash:8].chunk.js',
     path: path.resolve(__dirname, '../docs'),
     publicPath: '',
   },
