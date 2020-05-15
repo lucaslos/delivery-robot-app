@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import Icon from '@src/components/Icon';
 import { circle } from '@src/style/utils/circle';
 import { centerContent } from '@src/style/utils/centerContent';
 import { anyFunction } from '@src/typings/utils';
 import { theme } from '@src/style/theme';
+import { cx } from '@src/utils/cx';
 
 const Container = styled.button`
   ${circle(84)};
@@ -15,7 +16,7 @@ const Container = styled.button`
   -webkit-user-select: none;
   transition: 160ms;
 
-  &:active {
+  &.pressed {
     box-shadow: 0px 0px 16px rgba(86, 204, 242, 0.7);
   }
 `;
@@ -39,20 +40,37 @@ export const DirectionButton = ({
   onPressStart,
   onPressEnd,
   className,
-}: DirectionButtonProps) => (
-  <Container
-    className={className}
-    style={{ transform: `rotate(${rotations[direction]}deg)` }}
-    onMouseDown={onPressStart}
-    onMouseUp={onPressEnd}
-    onTouchStart={onPressStart}
-    onTouchEnd={onPressEnd}
-    onContextMenu={e => {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    }}
-  >
-    <Icon name="chevron-left" color={theme.colors.secondary} size={50} />
-  </Container>
-);
+}: DirectionButtonProps) => {
+  const [isPressed, setIsPressed] = useState(false);
+
+  function handlePressStart() {
+    setIsPressed(true);
+    onPressStart();
+  }
+
+  function handlePressEnd() {
+    if (isPressed) {
+      setIsPressed(false);
+      onPressEnd();
+    }
+  }
+
+  return (
+    <Container
+      className={cx(className, { pressed: isPressed })}
+      style={{ transform: `rotate(${rotations[direction]}deg)` }}
+      onMouseDown={handlePressStart}
+      onMouseUp={handlePressEnd}
+      onMouseLeave={handlePressEnd}
+      onTouchStart={handlePressStart}
+      onTouchEnd={handlePressEnd}
+      onContextMenu={e => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }}
+    >
+      <Icon name="chevron-left" color={theme.colors.secondary} size={50} />
+    </Container>
+  );
+};
