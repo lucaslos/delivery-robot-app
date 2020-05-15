@@ -7,7 +7,7 @@ import { anyFunction } from '@src/typings/utils';
 import { theme } from '@src/style/theme';
 import { cx } from '@src/utils/cx';
 
-const Container = styled.button`
+const Container = styled.div`
   ${circle(84)};
   background: #002254;
   ${centerContent};
