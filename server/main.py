@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, emit
 from flask_cors import CORS, cross_origin
 
 # Creating a flask app and using it to instantiate a socket object
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../docs", static_url_path="/")
 cors = CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -13,12 +13,6 @@ values = {
   'isAccelerating': 25,
   'slider2': 0,
 }
-
-# Handler for default flask route
-# Using jinja template to render html along with slider value as input
-@app.route('/')
-def index():
-  return render_template('index.html',**values)
 
 # Handler for a message recieved over 'connect' channel
 @socketio.on('connect')
@@ -32,4 +26,4 @@ def value_changed(message):
 
 # Notice how socketio.run takes care of app instantiation as well.
 if __name__ == '__main__':
-  socketio.run(app, host='0.0.0.0')
+  socketio.run(app, host='0.0.0.0', debug=True)

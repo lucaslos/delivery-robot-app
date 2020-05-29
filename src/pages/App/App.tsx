@@ -106,7 +106,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    socket.on('confirm connection', () => {
+    socket.on('connect', () => {
       setIsConnected(true);
     });
 
