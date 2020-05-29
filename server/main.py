@@ -2,6 +2,11 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS, cross_origin
 
+try:
+  import eventlet
+except ImportError as e:
+  pass  # instale o eventlet para habilitar o websockets
+
 # Creating a flask app and using it to instantiate a socket object
 app = Flask(__name__, static_folder="../docs", static_url_path="/")
 cors = CORS(app)
