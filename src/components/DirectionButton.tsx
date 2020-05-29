@@ -6,6 +6,7 @@ import { centerContent } from '@src/style/utils/centerContent';
 import { anyFunction } from '@src/typings/utils';
 import { theme } from '@src/style/theme';
 import { cx } from '@src/utils/cx';
+import Store from 't-state';
 
 const Container = styled.div`
   ${circle(84)};

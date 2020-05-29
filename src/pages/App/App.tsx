@@ -10,6 +10,7 @@ import { stack } from '@src/style/utils/stack';
 import { letterSpacing } from '@src/style/utils/letterSpacing';
 import Car from '@src/components/Car';
 import { centerContent } from '@src/style/utils/centerContent';
+import io from 'socket.io-client';
 import { useShortCut, useOnKeyPress } from '@src/utils/hooks/useShortCut';
 import hotkeys, { KeyHandler } from 'hotkeys-js';
 
@@ -73,6 +74,12 @@ const OrientationWarning = styled.div`
   }
 `;
 
+const ConnectionStatus = styled.div`
+  font-size: 14px;
+  margin-left: auto;
+  margin-right: 16px;
+`;
+
 function toggleFullScreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
@@ -81,6 +88,8 @@ function toggleFullScreen() {
   }
 }
 
+const socket = io.connect('http://localhost:5000');
+
 const App = () => {
   const [lefDoorIsOpen, setLefDoorIsOpen] = useState(false);
   const [rightDoorIsOpen, setRightDoorIsOpen] = useState(false);
@@ -88,10 +97,31 @@ const App = () => {
   const [isTurningRight, setIsTurningRight] = useState(false);
   const [isAccelerating, setIsAccelerating] = useState(false);
   const [isReversing, setIsReversing] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+
+  function sendIsAccelerating(value: boolean) {
+    socket.emit('set isAccelerating', {
+      value,
+    });
+  }
+
+  useEffect(() => {
+    socket.on('confirm connection', () => {
+      setIsConnected(true);
+    });
+
+    socket.on('disconnect', () => {
+      setIsConnected(false);
+    });
+
+    socket.on('update isAccelerating', (msg: any) => {
+      setIsAccelerating(msg.value);
+    });
+  }, []);
 
   useOnKeyPress('w', {
-    onPressStart: () => setIsAccelerating(true),
-    onPressEnd: () => setIsAccelerating(false),
+    onPressStart: () => sendIsAccelerating(true),
+    onPressEnd: () => sendIsAccelerating(false),
   });
 
   useOnKeyPress('s', {
@@ -113,6 +143,10 @@ const App = () => {
     <Container>
       <TopBar>
         <Title onClick={toggleFullScreen}>Modo de Controle Manual</Title>
+
+        <ConnectionStatus>
+          {isConnected ? 'Conectado' : 'Desconectado'}
+        </ConnectionStatus>
       </TopBar>
       {/* TODO: status bar */}
       <CarContainer
@@ -146,8 +180,8 @@ const App = () => {
       <SpeedColtrols>
         <DirectionButton
           direction="up"
-          onPressStart={() => setIsAccelerating(true)}
-          onPressEnd={() => setIsAccelerating(false)}
+          onPressStart={() => sendIsAccelerating(true)}
+          onPressEnd={() => sendIsAccelerating(false)}
         />
         <DirectionButton
           direction="down"
