@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { fillContainer } from '@src/style/utils/fillContainer';
-import { theme } from '@src/style/theme';
-import { DirectionButton } from '@src/components/DirectionButton';
 import Button from '@src/components/Button';
+import Car from '@src/components/Car';
+import { DirectionButton } from '@src/components/DirectionButton';
+import { theme } from '@src/style/theme';
+import { centerContent } from '@src/style/utils/centerContent';
+import { fillContainer } from '@src/style/utils/fillContainer';
 import { gridPos } from '@src/style/utils/grid';
 import { inline } from '@src/style/utils/inline';
-import { stack } from '@src/style/utils/stack';
 import { letterSpacing } from '@src/style/utils/letterSpacing';
-import Car from '@src/components/Car';
-import { centerContent } from '@src/style/utils/centerContent';
+import { stack } from '@src/style/utils/stack';
+import { useOnKeyPress } from '@src/utils/hooks/useShortCut';
+import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import { useShortCut, useOnKeyPress } from '@src/utils/hooks/useShortCut';
-import hotkeys, { KeyHandler } from 'hotkeys-js';
 
 const Container = styled.div`
   ${fillContainer};
@@ -77,6 +76,8 @@ const OrientationWarning = styled.div`
 const ConnectionStatus = styled.div`
   font-size: 14px;
   margin-left: auto;
+  font-weight: 500;
+  text-transform: uppercase;
   margin-right: 16px;
 `;
 
@@ -90,20 +91,48 @@ function toggleFullScreen() {
 
 const socket = io.connect('http://localhost:5000');
 
-const App = () => {
-  const [lefDoorIsOpen, setLefDoorIsOpen] = useState(false);
-  const [rightDoorIsOpen, setRightDoorIsOpen] = useState(false);
-  const [isTurningLeft, setIsTurningLeft] = useState(false);
-  const [isTurningRight, setIsTurningRight] = useState(false);
-  const [isAccelerating, setIsAccelerating] = useState(false);
-  const [isReversing, setIsReversing] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
+function useServerValue<T>(varName: string, initialValue: T) {
+  const [value, setValue] = useState(initialValue);
 
-  function sendIsAccelerating(value: boolean) {
-    socket.emit('set isAccelerating', {
-      value,
+  function sendToServer(newValue: T) {
+    socket.emit('set value', {
+      name: varName,
+      value: newValue,
     });
   }
+
+  useEffect(() => {
+    socket.on(`update ${varName}`, (msg: any) => {
+      setValue(msg.value);
+    });
+  }, []);
+
+  return [value, sendToServer] as const;
+}
+
+const App = () => {
+  const [lefDoorIsOpen, setLefDoorIsOpen] = useServerValue(
+    'lefDoorIsOpen',
+    false,
+  );
+  const [rightDoorIsOpen, setRightDoorIsOpen] = useServerValue(
+    'rightDoorIsOpen',
+    false,
+  );
+  const [isTurningLeft, setIsTurningLeft] = useServerValue(
+    'isTurningLeft',
+    false,
+  );
+  const [isTurningRight, setIsTurningRight] = useServerValue(
+    'isTurningRight',
+    false,
+  );
+  const [isAccelerating, setIsAccelerating] = useServerValue(
+    'isAccelerating',
+    false,
+  );
+  const [isReversing, setIsReversing] = useServerValue('isReversing', false);
+  const [isConnected, setIsConnected] = useState(socket.connected);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -113,15 +142,11 @@ const App = () => {
     socket.on('disconnect', () => {
       setIsConnected(false);
     });
-
-    socket.on('update isAccelerating', (msg: any) => {
-      setIsAccelerating(msg.value);
-    });
   }, []);
 
   useOnKeyPress('w', {
-    onPressStart: () => sendIsAccelerating(true),
-    onPressEnd: () => sendIsAccelerating(false),
+    onPressStart: () => setIsAccelerating(true),
+    onPressEnd: () => setIsAccelerating(false),
   });
 
   useOnKeyPress('s', {
@@ -144,7 +169,7 @@ const App = () => {
       <TopBar>
         <Title onClick={toggleFullScreen}>Modo de Controle Manual</Title>
 
-        <ConnectionStatus>
+        <ConnectionStatus css={{ color: !isConnected ? '#EF5350' : '#69F0AE' }}>
           {isConnected ? 'Conectado' : 'Desconectado'}
         </ConnectionStatus>
       </TopBar>
@@ -180,8 +205,8 @@ const App = () => {
       <SpeedColtrols>
         <DirectionButton
           direction="up"
-          onPressStart={() => sendIsAccelerating(true)}
-          onPressEnd={() => sendIsAccelerating(false)}
+          onPressStart={() => setIsAccelerating(true)}
+          onPressEnd={() => setIsAccelerating(false)}
         />
         <DirectionButton
           direction="down"
